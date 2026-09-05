@@ -1,0 +1,11 @@
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pillow
+python-multipart==0.0.9
+
+# CPU-only builds — the default PyPI wheels pull CUDA and are 2GB+, which
+# blows past Render free tier's build/runtime limits. This index gives you
+# the much smaller CPU-only wheels instead.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.3.1
+torchvision==0.18.1
