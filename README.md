@@ -66,6 +66,31 @@ Response:
   local use; if you containerize this for cloud deployment later, you'll
   likely want a CPU-only Docker image unless you're paying for GPU instances.
 
+## Deploying to Render (free tier)
+
+This repo includes a `render.yaml` Blueprint, so Render can configure the
+service automatically instead of you clicking through the dashboard.
+
+1. Push this repo to GitHub (`best_model.pth` is only ~2.4MB, so it's fine to
+   commit directly — no Git LFS or external storage needed).
+2. In the Render dashboard: **New > Blueprint**, point it at the repo. Render
+   reads `render.yaml` and creates a free web service with:
+   - `MODEL_PATH=best_model.pth` (the checkpoint committed at the repo root)
+   - `ALLOWED_ORIGINS` for CORS (comma-separated; update this to your deployed
+     frontend's URL once you have one)
+   - build command `pip install -r requirements.txt`, start command
+     `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+3. Deploy. First build takes a few minutes (downloading CPU-only torch).
+
+No Blueprint? Create a Web Service manually instead and set the same build
+command / start command / env vars from `render.yaml` by hand.
+
+**Free tier gotchas:**
+- The instance spins down after 15 min of no traffic; the next request pays a
+  ~30-60s cold start while it spins back up and reloads the model.
+- 512MB RAM — CPU-only torch + this small model fits, but don't add much else.
+- `requirements.txt` pulls torch/torchvision from PyTorch's CPU wheel index,
+  not the default (CUDA) wheels — those are 2GB+ and won't fit.
 
 # static file for testing
 

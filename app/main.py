@@ -48,9 +48,18 @@ inference_transform = transforms.Compose([
 # App + model loading (loaded once at startup, not per-request)
 # -----------------------------------------------------------------------
 app = FastAPI(title="AQI Image Classifier API")
+
+# Comma-separated list, e.g. "http://localhost:5173,https://your-frontend.onrender.com"
+_default_origins = "http://localhost:3000,http://localhost:5173"
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("ALLOWED_ORIGINS", _default_origins).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # adjust to your React dev server's actual port
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
