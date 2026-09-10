@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import torch
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from torchvision import transforms
 
@@ -65,6 +66,12 @@ app.add_middleware(
 )
 
 model = None
+
+# Serve the bundled static frontend. Resolved relative to the project root so it
+# works no matter which directory uvicorn is launched from.
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "..", "static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+
 
 @app.on_event("startup")
 def startup_load_model():
