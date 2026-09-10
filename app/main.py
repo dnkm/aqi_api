@@ -108,4 +108,5 @@ async def predict(file: UploadFile = File(...)):
             CLASS_LABELS.get(i, str(i)): round(float(p), 4)
             for i, p in enumerate(probabilities)
         },
+        "modelVersion": "0.1.0",
     })
