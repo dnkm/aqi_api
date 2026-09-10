@@ -87,7 +87,7 @@ def startup_load_model():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "device": DEVICE, "model_loaded": model is not None}
+    return {"version": "0.1.0", "status": "ok", "device": DEVICE, "model_loaded": model is not None}
 
 
 @app.post("/predict")
