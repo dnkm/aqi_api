@@ -1,69 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>AQI Image Classifier</title>
-<style>
-  body { font-family: system-ui, sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
-  h1 { font-size: 1.25rem; }
-  form { display: flex; flex-direction: column; gap: 12px; }
-  button { padding: 8px 16px; cursor: pointer; }
-  pre { background: #f4f4f4; padding: 12px; border-radius: 6px; white-space: pre-wrap; word-break: break-word; }
-  #error { color: #b00020; }
-</style>
-</head>
-<body>
-<h1>AQI Image Classifier</h1>
-
-<form id="predict-form">
-  <input type="file" id="file-input" accept="image/*" required>
-  <button type="submit">Predict</button>
-</form>
-
-<p id="error"></p>
-<pre id="result"></pre>
-
-<script>
-  const form = document.getElementById('predict-form');
-  const fileInput = document.getElementById('file-input');
-  const resultEl = document.getElementById('result');
-  const errorEl = document.getElementById('error');
-
-  // Change this if your API runs somewhere other than localhost:8000
-  const API_URL = 'http://localhost:8000/predict';
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    errorEl.textContent = '';
-    resultEl.textContent = '';
-
-    const file = fileInput.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      resultEl.textContent = 'Predicting...';
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        errorEl.textContent = `Error ${response.status}: ${data.detail || 'Request failed'}`;
-        resultEl.textContent = '';
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <title>AQI Image Classifier</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 480px;
+        margin: 40px auto;
+        padding: 0 16px;
       }
+      h1 {
+        font-size: 1.25rem;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      button {
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+      pre {
+        background: #f4f4f4;
+        padding: 12px;
+        border-radius: 6px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      #error {
+        color: #b00020;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>AQI Image Classifier</h1>
 
-      resultEl.textContent = JSON.stringify(data, null, 2);
-    } catch (err) {
-      resultEl.textContent = '';
-      errorEl.textContent = `Request failed: ${err.message}`;
-    }
-  });
-</script>
-</body>
+    <form id="predict-form">
+      <input type="file" id="file-input" accept="image/*" required />
+      <button type="submit">Predict</button>
+    </form>
+
+    <p id="error"></p>
+    <pre id="result"></pre>
+
+    <script>
+      const form = document.getElementById("predict-form");
+      const fileInput = document.getElementById("file-input");
+      const resultEl = document.getElementById("result");
+      const errorEl = document.getElementById("error");
+
+      // Change this if your API runs somewhere other than localhost:8000
+      const API_URL = "/predict";
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorEl.textContent = "";
+        resultEl.textContent = "";
+
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          resultEl.textContent = "Predicting...";
+          const response = await fetch(API_URL, {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            errorEl.textContent = `Error ${response.status}: ${data.detail || "Request failed"}`;
+            resultEl.textContent = "";
+            return;
+          }
+
+          resultEl.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          resultEl.textContent = "";
+          errorEl.textContent = `Request failed: ${err.message}`;
+        }
+      });
+    </script>
+  </body>
 </html>
